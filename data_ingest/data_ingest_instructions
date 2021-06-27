@@ -1,0 +1,14 @@
+The data for the CO2 emissions was gotten from the site: https://github.com/owid/co2-data
+
+I downloaded the file owid-co2-data.csv file directly to my local device. 
+
+I then moved the file onto my (non-HDFS) home directory on the Dumbo login node using a command from my terminal window (assuming that the file is in the current directory):
+	>scp ./owid-co2-data.csv ebw289@dumbo.es.its.nyu.edu:/home/ebw289
+
+Now after logging into Dumbo, I see that my file is in the directory. Now to put the file into a folder (finalProject) in my home directory on HDFS:
+	>hdfs dfs -put /user/ebw289/owid-co2-data.csv /user/ebw289/finalProject
+
+
+
+// Note
+There were different options I could have done to ingest data into HDFS; however, I realized because we're working with relatively small amounts of data (~4MB), I realized we wouldn't need external tools such as Sqoop to transfer the data. 

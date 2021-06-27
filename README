@@ -1,0 +1,3 @@
+Each Directory will have more in-depth instructions on how to build/run the code and where to find the results of the run.
+
+The input data can be accessed through https://github.com/owid/co2-data, for more details see the data_ingest directory

@@ -1,0 +1,43 @@
+This will cover the Hive Queries that were ran in order to process my analytics
+
+These steps occurred after the MapReduce Cleaning, assuming that the output file is located in dumbo directory '/user/ebw289/finalProject/output'
+
+1. Get on Beeline Terminal (assuming we're on dumbo terminal)
+	> beeline
+2. Connect to hive
+	> !connect jdbc:hive2://babar.es.its.nyu.edu:10000/
+3. Access my db
+	hive2 > use ebw289;
+4. Create a table from the Cleaned results. See '/screenshots/create_external_table' for more details.
+	hive2 > create external table co2data (country string, year int,  emission double) row format delimited fields terminated by ',' location '/user/ebw289/finalProject/output/';
+
+5. Group a table grouping by year and summing emissions
+	hive2 > create table co2data2 as select co2data.year, co2data.emission from (select year, sum(emission) as emission from co2data group by year)co2data;
+
+This will give us the global sum of carbon dioxide emissions for each year. Which will be useful in creating our graph. Due to an issue with the original code, the tables are called co2data5. See '/screenshots/queried_table' for more details.
+
+6. Now we have to move Mark's (my teammate) data into Hive. The data was of the form of a cleaned/queried CSV file. This was first done using the Hadoop command 'hdfs dfs -copyToLocal [fileName]' from his table output and then moving it to my local machine. I then used 'hdfs dfs -put [fileName] [HDFS fileLocation]' to put it into onto my HDFS directory. To see the file please see filename of tempAnalysis.csv on my hdfs directory: '/user/ebw289/tempAnalysis'
+
+7. With this on hdfs, I created a new table with his data:
+	hive2 > create external table avgTemp (year int, avgTemperature double) row format delimited fields terminated by ',' location '/user/ebw289/tempAnalysis.csv';
+
+8. We then joined our two datasets. See '/screenshots/combine_land_data' or Hive Table combinedData2 for more details.
+	hive2 > create table combinedData as select avgtemp.year, avgtemp.avgtemperature, co2data2.emission from avgtemp inner join co2data2 on avgtemp.year = co2data2.year;
+
+9. Using this combined data we were able to export it to Tableau and create our first Analytic - a graph that compared Global Average Temperature versus Global CO2 Emissions. See '/screenshots/land_co2.png'. 
+
+10. Because our data was limited to land temperatures, we wanted to also explore ocean/sea temperatures, so we created a new combinedData3 that included sea temperature levels. See '/screenshots/combine_land_sea_data' or Hive table combinedData3:
+	hive2 > create table combinedData3 as select avgseaandlandtemp.year, avgseaandlandtemp.avgtemperature, co2data5.emission from avgseaandlandtemp inner join co2data5 on avgseaandlandtemp.year = co2data5.year;
+
+11. Using this other combined data we were able to export it to Tableau and create our second Analytic - a graph that compared Global Land and Sea Average Temperature versus Global CO2 Emissions. See '/screenshots/land_sea_co2.png'. 
+
+12. As an extension, I wanted to explore each nation's contribution to global carbon dioxide emissions by grouping the table by country this time. See Hive Table co2data3.
+	hive2 > create table co2data3 as select co2data.country, co2data.emission from (select country, sum(emission) as emission from co2data group by country)co2data;
+
+13. I exported this to Tableau and created our third Analytic - a Map that measured the total CO2 Emissions among every country. See '/screenshots/total_co2_emission.png'
+
+
+
+
+
+

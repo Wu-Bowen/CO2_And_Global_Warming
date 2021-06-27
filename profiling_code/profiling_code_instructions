@@ -1,0 +1,17 @@
+I used a MapReduce to Profile my data.
+
+To see the code goto counting_code directory.
+
+To run these files I created them in my (non-hdfs) dumbo terminal using vim. I then ran the commands to add them in my class path
+	> javac -classpath `yarn classpath` -d . CountRecsMapper.java
+	> javac -classpath `yarn classpath` -d . CountRecsReducer.java
+	> javac -classpath `yarn classpath`:. -d . CountRecs.java
+I then created the jar file
+	> jar -cvf countRecs.jar *.class
+Finally I ran the MapReduce Program
+	> hadoop jar countRecs.jar CountRecs /user/ebw289/finalProject/co2_data.csv /user/ebw289/finalProject/count
+
+	> hadoop jar countRecs.jar CountRecs /user/ebw289/finalProject/output3/part-r-00000 /user/ebw289/finalProject/count2
+
+
+Please see /user/ebw289/finalProject/count and /user/ebw289/finalProject/count2 for the line counts before and after cleaning

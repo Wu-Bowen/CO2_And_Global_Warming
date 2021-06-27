@@ -1,0 +1,14 @@
+I used a MapReduce to Clean my data.
+
+To see the code goto cleaning_code directory.
+
+To run these files I created them in my (non-hdfs) dumbo terminal using vim. I then ran the commands to add them in my class path
+	> javac -classpath `yarn classpath` -d . CleanMapper.java
+	> javac -classpath `yarn classpath` -d . CleanReducer.java
+	> javac -classpath `yarn classpath`:. -d . Clean.java
+I then created the jar file
+	> jar -cvf clean.jar *.class
+Finally I rand the MapReduce Program
+	> hadoop jar clean.jar Clean /user/ebw289/finalProject/co2_data.csv /user/ebw289/finalProject/output3
+
+Note that I have a few outputs in finalProject (namely output1, output2, output3). output3 was the one I had used for my analytic, the other were codes I had kept that required more cleaning. To see the results of the run see /user/ebw289/finalProject.
